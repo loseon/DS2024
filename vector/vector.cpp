@@ -3,7 +3,7 @@ typedef int Rank;
 
 template <typename T> class Vector {
 protected:
-	Rank _size; int_capacity; T* elem;
+	Rank _size; int _capacity ; T* _elem;
 	void copyFrom(T const* A, Rank lo, Rank hi);
 	void expand();
 	void shrink();
@@ -19,13 +19,13 @@ protected:
 public:
 	Vector(int c = DEFAULT_CAPACITY, int s = 0, T v = 0)
 	{
-		_elem = new T[_capacity = c]; for (_size = 0; _size < s; elem[_size++] = v;)
+		_elem = new T[_capacity = c]; for (_size = 0; _size < s; _elem[_size++] = v);
 	}
 	Vector(T const* A, Rank n) { copyForm(A, 0, n); }
 	Vector(T const* A, Rank lo, Rank hi) { copyForm(A, 0, hi); }
 	Vector(Vector<T> const& V) { copyFrom(V._elem, 0, V._size); }
 	Vector(Vector<T> const& V, Rank lo, Rank hi) { copyFrom(V._elem, 0, lo, hi); }
-	~vector() { delete[] _elem; }
+	~Vector() { delete[] _elem; }
 	Rank size() const { return _size; }
 	bool empty() const { return !_size; }
 	int disordered() const;
@@ -37,7 +37,7 @@ public:
 	}
 	Rank search(T const& e, Rank lo, Rank hi)const;
 	T& operator [](Rank r)const;
-	Vector<T>& operator= (Vector<T> const&;)
+	Vector<T>& operator= (Vector<T> const&);
 		T remove(Rank r)const;
 	int remove(Rank lo, Rank hi);
 	Rank insert(Rank r, T const& e);
@@ -49,14 +49,25 @@ public:
 	int deduplicate();
 	int uniquify();
 	void traverse(void(*)(T*));
-	template <typename Vst> void traverse(VST&);
+	template <typename VST> void traverse( VST& );
 };
 template <typename T>
 void Vector<T>::copyFrom(T const* A, Rank lo, Rank hi) {
 	_elem = new T[_capacity = 2 * (hi - lo)]; _size = 0;
 	while (lo < hi)
-		_elem[_sie++] = A[lo++];
+		_elem[_size++] = A[lo++];
 };
 template <typename T> Vector<T>& Vector <T>::operator = (Vector<T> const& V) {
+    if(_elem) delete [] _elem;
+    copyFrom (V.elem,0,V.size());
+	return *this;
+}
+template<typename T>void Vector<T>::expand(){
+	if (_size <_capacity)return;
+	if (_capacity < DEFAULT_CAPACITY) _capacity = DEFAULT_CAPACITY;
+	T* oldElem = _elem; _elem = new T[_capacity <<=1];
+	for (int i=0; i < _size; i++)
+	    _elem[i]=oldElem[i];
+	delete [ ] oldElem;	
 
 }
