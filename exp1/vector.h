@@ -1,3 +1,5 @@
+#include<stdlib.h>
+#include <algorithm>
 typedef int Rank;
 #define DEFAULT_CAPACITY  3
 
@@ -8,15 +10,17 @@ protected:
 	void expand();
 	void shrink();
 	bool bubble(Rank lo, Rank hi);
-	void bubbleSort(Rank lo, Rank hi);
+	
 	Rank max(Rank lo, Rank hi);
 	void selectionSort(Rank lo, Rank hi);
 	void merge(Rank lo, Rank mi, Rank hi);
-	void mergeSort(Rank lo, Rank hi);
+	
 	Rank partition(Rank lo, Rank hi);
 	void quickSort(Rank lo, Rank hi);
 	void heapSort(Rank lo, Rank hi);
 public:
+    void bubbleSort(Rank lo, Rank hi);
+    void mergeSort(Rank lo, Rank hi);
 	Vector(int c = DEFAULT_CAPACITY, int s = 0, T v = 0)
 	{
 		_elem = new T[_capacity = c]; for (_size = 0; _size < s; _elem[_size++] = v);
@@ -59,7 +63,7 @@ void Vector<T>::copyFrom(T const* A, Rank lo, Rank hi) {
 };
 template <typename T> Vector<T>& Vector <T>::operator = (Vector<T> const& V) {
     if(_elem) delete [] _elem;
-    copyFrom (V.elem,0,V.size());
+    copyFrom (V._elem,0,V.size());
 	return *this;
 }
 template<typename T>void Vector<T>::expand(){
@@ -87,12 +91,12 @@ template <typename T> void permute (Vector<T>& V){
 template <typename T> void Vector<T>::unsort (Rank lo,Rank hi){
 	T* V = _elem + lo;
 	for ( Rank i=hi-lo;i > 0;i--)
-	    swap ( V[i-1],V[rand()%i]);
+	    std::swap ( V[i-1],V[rand() % i]);
 }
 template < typename T> static bool lt (T* a, T* b){ return lt ( *a, *b);}
-template < typename T> static bool lt (T* a, T* b){ return a<b; }
-template < typename T> static bool ep (T* a, T* b){ return ep (*a,*b);}
-template < typename T> static bool ep (T* a, T* b){ return a==b;}
+template < typename T> static bool lt (T& a, T& b){ return a<b; }
+template < typename T> static bool eq (T* a, T* b){ return ep (*a,*b);}
+template < typename T> static bool eq (T& a, T& b){ return a==b;}
 template < typename T>
 Rank Vector<T>::find (T const& e,Rank lo,Rank hi )const{
 	while ((lo<hi--) && (e !=_elem[hi]));
@@ -139,7 +143,7 @@ void Vector<T>:: traverse (VST& visit)
 template<typename T>struct Increase
 
 {
-	virtual void operator() (T& e ){ e++}
+	virtual void operator() (T& e ){ e++;}
 };
 template <typename T> void increase (Vector<T> & V)
 {V.traverse (Increase<T>());}
@@ -155,14 +159,14 @@ template <typename T> int Vector<T>:: uniquify(){
 	_elem[i-1] == _elem[i] ? remove(i) : i++;
 	return oldSize - _size;
 }                                                                               //45
-template <typename T> int Vector<T>:: uniquify(){
-	Rank i=0 ,j=0;
-	while(++j< _size)
-	if (_elem[i] != _elem[j])
-	_elem[++i]=_elem[j];
-	_size =++i;shrink();
-	return j-i;
-}
+// template <typename T> int Vector<T>:: uniquify(){
+// 	Rank i=0 ,j=0;
+// 	while(++j< _size)
+// 	if (_elem[i] != _elem[j])
+// 	_elem[++i]=_elem[j];
+// 	_size =++i;shrink();
+// 	return j-i;
+// }
 template <typename T>
 Rank Vector<T> :: search ( T const& e,Rank lo,Rank hi) const{
 	return (rand()%2)?
@@ -177,22 +181,22 @@ template<typename T > static Rank binSearch (T* A,T const& e,Rank lo,Rank hi){
 	}
 	return -1;
 }                                                                         //48
-template <typename T> static Rank binSearch (T* A,T const& e,Rank lo,Rank hi){
-	while (1<hi -lo){
-		Rank mi =(lo + hi) >>1;
-		(e <A[mi]) ? hi = mi : lo =mi;
-	}
-	return (e == A[lo])?lo : -1;
+// template <typename T> static Rank binSearch (T* A,T const& e,Rank lo,Rank hi){
+// 	while (1<hi -lo){
+// 		Rank mi =(lo + hi) >>1;
+// 		(e <A[mi]) ? hi = mi : lo =mi;
+// 	}
+// 	return (e == A[lo])?lo : -1;
 
-}
+// }
                                                                      //55
-template <typename T> static Rank binSearch (T* A,T const& e,Rank lo,Rank hi){
-	while (lo < hi){
-		Rank mi =(lo + hi) >> 1;
-		(e < A[mi])? hi = mi : lo = mi +1;
-	}
-	return --lo;
-}
+// template <typename T> static Rank binSearch (T* A,T const& e,Rank lo,Rank hi){
+// 	while (lo < hi){
+// 		Rank mi =(lo + hi) >> 1;
+// 		(e < A[mi])? hi = mi : lo = mi +1;
+// 	}
+// 	return --lo;
+// }
 template<typename T> void Vector<T>::sort (Rank lo,Rank hi){
 	switch ( rand() % 5){
 		case 1: bubbleSort (lo,hi); break;
@@ -209,9 +213,9 @@ void Vector<T>:: bubbleSort (Rank lo,Rank hi)
 template <typename T> bool Vector<T>::bubble ( Rank lo,Rank hi){
 	bool sorted = true;
 	while (++lo < hi)
-	if ( _elem[lo -1] _elem[lo]){
+	if ( _elem[lo -1], _elem[lo]){
 		sorted =false;
-		swap( _elem[lo -1], _elem[lo]);
+		std::swap( _elem[lo -1], _elem[lo]);
 	}
 	return sorted;
 }
@@ -223,14 +227,19 @@ void Vector<T>::mergeSort (Rank lo,Rank hi){
 	merge ( lo,mi,hi);
 }
 template <typename T>
-void Vector<T>::merge (Rank lo,Rank mi,Rank hi){
-	T* A = _elem + lo;
-	int lb = mi - lo; T* B =new T[lb];
-	for(Rank i = 0;i < lb; B[i] = A[i++]);
-	int lc =hi - mi; T* C = _elem + mi;
-	for (Rank i=0,j=0,k=0;(j < lb)|| (k < lc);){
-		if ((j<lb)&&(!(k < lc) ||(B[j] <= C[k]))) A[i++]= B[j ++];
-		if ((k<lc)&&(!(j < lb) ||(C[k] <= B[j]))) A[i++]= C[j ++];
-	}
-	delete [] B;
+void Vector<T>::merge(Rank lo, Rank mi, Rank hi) {
+    T* A = _elem + lo;
+    int lb = mi - lo;
+    T* B = new T[lb];
+    for (Rank i = 0; i < lb; i++) B[i] = A[i]; // 复制前子向量
+    
+    int lc = hi - mi;
+    T* C = _elem + mi; // 后子向量C[0, lc)就地
+    
+    for (Rank i = 0, j = 0, k = 0; j < lb; ) { // 归并：反复从B和C中取出更小者
+        if (k >= lc || B[j] < C[k]) A[i++] = B[j++];
+        else A[i++] = C[k++];
+    }
+    
+    delete [] B; // 释放临时空间B
 }
