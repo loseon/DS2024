@@ -99,7 +99,7 @@ void reverseArray(Complex* arr, int size) {
 }
 
 int main() {
-    int n = 1000;
+    int n = 10;
     Complex* orderedArr = new Complex[n];
     
     // 生成无序复数向量
