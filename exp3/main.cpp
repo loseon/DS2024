@@ -6,7 +6,6 @@
 #include <cctype>
 
 using namespace std;
-
 // 位图类：表示位图数据，并支持位图的扩展和操作。
 class BitVector {
 public:

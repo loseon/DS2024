@@ -1,26 +1,30 @@
 //4.1Stack模板类
-#include "E:\DS2024\exp1\vector.h"
-template <typename T>class Stack: public Vector<T>
+#include "E:\DS2024\vector\vector.h"
+#include <stdexcept> 
+template <typename T>
+class Stack : public Vector<T>
 {
 public:
-    void push(const T &item){items.push_back(item);}
-    T pop(){if (!is_empty())
+    void push(const T &item) { Vector<T>::push_back(item); }
+    T pop()
+    {
+        if (!is_empty())
         {
-            T item = items.back();
-            items.pop_back();
+            T item = Vector<T>::back();
+            Vector<T>::pop_back();
             return item;
         }
-        throw out_of_range("Stack is empty");
+        throw std::out_of_range("Stack is empty");
     }
 
     bool is_empty() const
     {
-        return items.empty();
+        return Vector<T>::empty();
     }
+};
 
 // private:
 //     vector<T> items;
-};
 //4.2进制转化算法(递归版)
  void convert(Stack<char> &S, __int64 n, int base)
  {

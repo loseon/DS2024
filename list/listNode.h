@@ -1,29 +1,18 @@
-// 3.1列表节点模板类
-typedef int Rank;                    // 秩
-#define ListNodePosi(T) ListNode<T> * // 列表节点位置
+#pragma once
+using ListRank = unsigned int; // 秩
 
-template <typename T>
-struct ListNode // 列表节点类模板(以双向链表形式表现)
-{
-    T data;               // 数值
-    ListNodePosi(T) pred; // 前驱
-    ListNodePosi(T) succ; // 后继
-    // 构造函数
-    ListNode() {} // 针对header和trailer的构造
-    ListNode(T e, ListNodeposi(T) p = NULL, ListNodeposi(T) s = NULL)
-        : data(e), pred(p), succ(s) {} // 默认构造器
+#define ListNodePosi(T) ListNode<T>* // 列表节点位置
+
+template <typename T> struct ListNode { // 列表节点模板类(以双向链表形式实现)
+    // 成员
+    T data; ListNodePosi(T) pred; ListNodePosi(T) succ; // 数值、前驱、后继
+    // 构造方法
+    ListNode() {} // 针对head和tail的构造
+    ListNode(T const& e, ListNodePosi(T) p = nullptr, ListNodePosi(T) s = nullptr)
+        : data(e), pred(p), succ(s) {} // 默认构造器(类T须定义复制方法)
     // 操作接口
-    ListNodePosi(T) insertAsPred(T const &e); // 紧靠当前节点之前插入新节点
-    ListNodePosi(T) insertAsSucc(T const &e); // 紧靠当前节点之后插入新节点
-};
-#define ListNodeposi(T) ListNodeposi<T>*
-template <typename T> struct ListNode {
-  T data; ListNodeposi(T) pred; ListNodeposi(T) succ;
-  ListNode(){}
-  ListNode (T e,ListNodeposi(T) p =NULL,ListNodeposi(T) s= NUll)
-      :data ( e ),pred(p),succ (s){}
-    ListNodeposi(T) insertAsPred (T const& e);
-    ListNodeposi(T) insertAsSucc (T const& e);
+    ListNodePosi(T) insertPred(T const& e); // 紧靠当前节点之前插入新节点
+    ListNodePosi(T) insertSucc(T const& e); // 紧随当前节点之后插入新节点
 };
 
 
